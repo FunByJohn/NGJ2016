@@ -4,8 +4,7 @@
 #include <vector>
 
 #include "Line.hpp"
-
-typedef sf::Vector3<float> Vertex;
+#include "Level.hpp"
 
 class Application {
 	public:
@@ -20,8 +19,7 @@ class Application {
 	private:
 		sf::RenderWindow renderWindow;
 
-		std::vector<Vertex> verts;
-		std::vector<Line> lines;
+		Level level;
 
 		int playerPosition = 0;
 		sf::CircleShape player;

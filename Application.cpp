@@ -8,15 +8,11 @@
 
 Application::Application()
 	: renderWindow(sf::VideoMode(screenWidth, screenHeight), "NGJ2016"),
-	player(playerRadius) {
+	player(playerRadius),
+	level("level.txt") {
 
 	player.setFillColor(sf::Color::Blue);
 	centerOrigin(player);
-
-	verts.emplace_back(0.f, 50.f, 0.f);
-	verts.emplace_back(200.f, 200.f, 0.f);
-
-	lines.emplace_back(0, 1);
 }
 
 int Application::run() {
@@ -49,12 +45,15 @@ int Application::run() {
 void Application::tick(sf::Time dt) {
 	time += dt;
 
-	verts[0].x = 400 + sin(time.asSeconds()) * 400;
-	verts[1].y = 300 + cos(time.asSeconds()) * 150;
+	level.verts[0].x = 400 + sin(time.asSeconds()) * 400;
+	level.verts[1].y = 300 + cos(time.asSeconds()) * 150;
 }
 
 void Application::render() {
 	renderWindow.clear(sf::Color::Black);
+
+	auto& lines = level.lines;
+	auto& verts = level.verts;
 
 	for(int i = 0; i < lines.size(); i++) {
 		Line& l = lines[i];
