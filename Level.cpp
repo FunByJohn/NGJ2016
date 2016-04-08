@@ -32,19 +32,19 @@ bool Level::isRotating() { return rotating; }
 void Level::rotate(const sf::Event& event) {
 	auto& vert = verts[2];
 	switch(event.key.code) {
-		case sf::Keyboard::Left:
+		case sf::Keyboard::A:
 			vert.x -= 10;
 			break;
 
-		case sf::Keyboard::Right:
+		case sf::Keyboard::D:
 			vert.x += 10;
 			break;
 
-		case sf::Keyboard::Up:
+		case sf::Keyboard::W:
 			vert.y -= 10;
 			break;
 
-		case sf::Keyboard::Down:
+		case sf::Keyboard::S:
 			vert.y += 10;
 			break;
 	}

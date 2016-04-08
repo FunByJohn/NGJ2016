@@ -52,10 +52,10 @@ int Application::run() {
 void Application::handleInput(const sf::Event& event) {
 	if(event.type == sf::Event::KeyPressed) {
 		switch(event.key.code) {
-			case sf::Keyboard::Left:
-			case sf::Keyboard::Right:
-			case sf::Keyboard::Up:
-			case sf::Keyboard::Down:
+			case sf::Keyboard::A:
+			case sf::Keyboard::D:
+			case sf::Keyboard::W:
+			case sf::Keyboard::S:
 				level.rotate(event);
 				break;
 		}
