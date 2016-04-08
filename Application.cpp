@@ -91,26 +91,19 @@ void Application::render() {
 		sf::Vector3<float> a = verts[l.a], b = verts[l.b];
 		LineShape line(sf::Vector2f(a.x, a.y), sf::Vector2f(b.x, b.y), sf::Color::Yellow, thickness);
 		renderWindow.draw(line);
+	}
 
-		// Draw rounded line endpoints -- Should probably just draw all verts once
-		sf::CircleShape c(thickness / 2.f);
+	for(const auto& vert : verts) {
+		sf::CircleShape c(thinLineThickness);
 		centerOrigin(c);
 		c.setFillColor(sf::Color::Yellow);
-
-		c.setPosition(a.x, a.y);
-		renderWindow.draw(c);
-
-		c.setPosition(b.x, b.y);
+		c.setPosition(vert.x, vert.y);
 		renderWindow.draw(c);
 	}
 
-	auto vert = verts[playerPosition];
+	const auto& vert = verts[playerPosition];
 	player.setPosition(vert.x, vert.y);
 	renderWindow.draw(player);
-
-	//renderWindow.draw(circle);
-
-	//renderWindow.draw(arr);
 
 	renderWindow.display();
 }
