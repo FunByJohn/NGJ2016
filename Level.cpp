@@ -18,9 +18,10 @@ Level::Level(const std::string& filename) {
 		verts.emplace_back(x, y, z);
 	}
 
+	bool t;
 	while(K--) {
-		file >> x >> y;
-		lines.emplace_back(x, y);
+		file >> x >> y >> t;
+		lines.emplace_back(x, y, t);
 	}
 
 	file.close();

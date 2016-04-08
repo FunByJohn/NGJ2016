@@ -1,3 +1,3 @@
 #include "Line.hpp"
 
-Line::Line(int a_, int b_) : a(a_), b(b_) {}
+Line::Line(int a, int b, bool traversable) : a(a), b(b), traversable(traversable) {}

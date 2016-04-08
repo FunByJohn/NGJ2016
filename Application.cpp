@@ -78,12 +78,13 @@ void Application::render() {
 	for(int i = 0; i < lines.size(); i++) {
 		Line& l = lines[i];
 
+		float thickness = (l.traversable ? thickLineThickness : thinLineThickness);
 		sf::Vector3<float> a = verts[l.a], b = verts[l.b];
-		LineShape line(sf::Vector2f(a.x, a.y), sf::Vector2f(b.x, b.y), sf::Color::Yellow, thinLineThickness);
+		LineShape line(sf::Vector2f(a.x, a.y), sf::Vector2f(b.x, b.y), sf::Color::Yellow, thickness);
 		renderWindow.draw(line);
 
 		// Draw rounded line endpoints -- Should probably just draw all verts once
-		sf::CircleShape c(thinLineThickness);
+		sf::CircleShape c(thickness / 2.f);
 		centerOrigin(c);
 		c.setFillColor(sf::Color::Yellow);
 

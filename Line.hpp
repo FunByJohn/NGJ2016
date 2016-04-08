@@ -2,7 +2,8 @@
 
 struct Line {
 	int a, b;
+	bool traversable;
 
-	Line(int a_, int b_);
+	Line(int a, int b, bool traversable);
 };
 
