@@ -24,8 +24,15 @@ int Application::run() {
 	while(renderWindow.isOpen()) {
 		sf::Event event;
 		while(renderWindow.pollEvent(event)) {
-			if(event.type == sf::Event::Closed)
+			switch(event.type) {
+			case sf::Event::Closed:
 				renderWindow.close();
+				break;
+
+			default:
+				handleInput(event);
+				break;
+			}
 		}
 
 		while(acc <= frameTime) {
@@ -41,6 +48,19 @@ int Application::run() {
 	}
 }
 
+
+void Application::handleInput(const sf::Event& event) {
+	if(event.type == sf::Event::KeyPressed) {
+		switch(event.key.code) {
+			case sf::Keyboard::Left:
+			case sf::Keyboard::Right:
+			case sf::Keyboard::Up:
+			case sf::Keyboard::Down:
+				level.rotate(event);
+				break;
+		}
+	}
+}
 
 void Application::tick(sf::Time dt) {
 	time += dt;

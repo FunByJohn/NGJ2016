@@ -26,3 +26,27 @@ Level::Level(const std::string& filename) {
 	file.close();
 }
 
+bool Level::isRotating() { return rotating; }
+
+void Level::rotate(const sf::Event& event) {
+	auto& vert = verts[2];
+	switch(event.key.code) {
+		case sf::Keyboard::Left:
+			vert.x -= 10;
+			break;
+
+		case sf::Keyboard::Right:
+			vert.x += 10;
+			break;
+
+		case sf::Keyboard::Up:
+			vert.y -= 10;
+			break;
+
+		case sf::Keyboard::Down:
+			vert.y += 10;
+			break;
+	}
+}
+
+

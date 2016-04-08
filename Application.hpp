@@ -12,6 +12,7 @@ class Application {
 		int run();
 
 	private:
+		void handleInput(const sf::Event& event);
 		void tick(sf::Time dt);
 		void render();
 
