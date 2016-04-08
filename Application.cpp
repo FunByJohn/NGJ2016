@@ -1,11 +1,22 @@
 #include "Application.hpp"
+#include "LineShape.hpp"
 #include <iostream>
+#include <cmath>
+
+#include "Util.hpp"
+#include "Consts.hpp"
 
 Application::Application()
-	: renderWindow(sf::VideoMode(800, 600), "NGJ2016"),
-	circle(50) {
+	: renderWindow(sf::VideoMode(screenWidth, screenHeight), "NGJ2016"),
+	player(playerRadius) {
 
-	circle.setFillColor(sf::Color::Green);
+	player.setFillColor(sf::Color::Blue);
+	centerOrigin(player);
+
+	verts.emplace_back(0.f, 50.f, 0.f);
+	verts.emplace_back(200.f, 200.f, 0.f);
+
+	lines.emplace_back(0, 1);
 }
 
 int Application::run() {
@@ -36,13 +47,41 @@ int Application::run() {
 
 
 void Application::tick(sf::Time dt) {
-	circle.setPosition(dt.asMicroseconds(), 0);
+	time += dt;
+
+	verts[0].x = 400 + sin(time.asSeconds()) * 400;
+	verts[1].y = 300 + cos(time.asSeconds()) * 150;
 }
 
 void Application::render() {
 	renderWindow.clear(sf::Color::Black);
 
-	renderWindow.draw(circle);
+	for(int i = 0; i < lines.size(); i++) {
+		Line& l = lines[i];
+
+		sf::Vector3<float> a = verts[l.a], b = verts[l.b];
+		LineShape line(sf::Vector2f(a.x, a.y), sf::Vector2f(b.x, b.y), sf::Color::Yellow, thinLineThickness);
+		renderWindow.draw(line);
+
+		// Draw rounded line endpoints -- Should probably just draw all verts once
+		sf::CircleShape c(thinLineThickness);
+		centerOrigin(c);
+		c.setFillColor(sf::Color::Yellow);
+
+		c.setPosition(a.x, a.y);
+		renderWindow.draw(c);
+
+		c.setPosition(b.x, b.y);
+		renderWindow.draw(c);
+	}
+
+	auto vert = verts[playerPosition];
+	player.setPosition(vert.x, vert.y);
+	renderWindow.draw(player);
+
+	//renderWindow.draw(circle);
+
+	//renderWindow.draw(arr);
 
 	renderWindow.display();
 }
