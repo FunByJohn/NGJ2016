@@ -58,6 +58,9 @@ void Application::handleInput(const sf::Event& event) {
 			case sf::Keyboard::S:
 				level.rotate(event);
 				break;
+
+			default:
+				move(event.key.code);
 		}
 	}
 }
@@ -65,8 +68,14 @@ void Application::handleInput(const sf::Event& event) {
 void Application::tick(sf::Time dt) {
 	time += dt;
 
+	soundPlayer.tick(dt);
+
 	level.verts[0].x = 400 + sin(time.asSeconds()) * 400;
 	level.verts[1].y = 300 + cos(time.asSeconds()) * 150;
+}
+
+void Application::move(sf::Keyboard::Key keyCode) {
+	soundPlayer.play(Sound::SWOOSH);
 }
 
 void Application::render() {
