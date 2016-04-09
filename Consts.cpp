@@ -12,3 +12,10 @@ std::string gameTitle = "Good game";
 
 sf::Color traversedColor = sf::Color(0, 0, 0, 128);
 sf::Color notTraversedColor = sf::Color::Black;
+
+int levelIndex = 0;
+std::vector<std::string> levels = {
+	"level.txt",
+	"level3.txt"
+};
+

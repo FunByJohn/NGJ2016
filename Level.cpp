@@ -11,7 +11,8 @@ Level::Level(const std::string& filename, Context& context)
     : context(context),
     thinCircle(0.5 * thinLineThickness, 16),
     thickCircle(0.5 * thickLineThickness, 16),
-    currentAction(GameplayAction::Idle) {
+    fader(sf::Vector2f(screenWidth, screenHeight)),
+    currentAction(GameplayAction::NotStarted) {
 
     /*
         First line contains two numbers: N, K, where N is the number of vertices, and K is the number of lines.
@@ -24,7 +25,7 @@ Level::Level(const std::string& filename, Context& context)
     perspective = 0.0f;
     completedLines = 0;
 
-	std::fstream file;
+    std::fstream file;
 	file.open(filename);
 
 	int N, K;
@@ -45,8 +46,6 @@ Level::Level(const std::string& filename, Context& context)
     int S;
     file >> S;
 
-    std::cout << "Start at: " << S << std::endl;
-
     playerVertex = S;
     playerTargetVertex = playerVertex;
     playerPosition = 0.0f;
@@ -64,6 +63,9 @@ Level::Level(const std::string& filename, Context& context)
 
     thinCircle.setFillColor(sf::Color::Black);
     thickCircle.setFillColor(sf::Color::Black);
+
+    centerOrigin(fader);
+    fader.setFillColor(sf::Color(255, 255, 255, 255));
 }
 
 GameplayAction::State Level::getCurrentAction() { return currentAction; }
@@ -123,8 +125,6 @@ void Level::move(const sf::Event& event) {
         if(event.key.code == sf::Keyboard::Up) movement.y = -1.0f;
         if(event.key.code == sf::Keyboard::Down) movement.y = 1.0f;
 
-        std::cout << movement.x << " " << movement.y << std::endl;
-
         auto& player = verts[playerVertex];
         int match = -1; // the line's index
         float matchZ = -1000000.0;
@@ -164,7 +164,7 @@ void Level::move(const sf::Event& event) {
 
                 if(fuzzyEquals(dx / d, movement.x) &&
                    fuzzyEquals(dy / d, movement.y)) {
-                    
+
                     if(other.z > matchZ) {
                         match = i;
                         matchZ = other.z;
@@ -198,18 +198,35 @@ void Level::update(sf::Time dt) {
     //
 
 	switch(currentAction) {
+        case GameplayAction::NotStarted:
+        {
+            timer += dt.asSeconds();
+
+            if(timer < fadeDuration.asSeconds()) {
+                float alpha = 255 - 255 * (timer / fadeDuration.asSeconds());
+                fader.setFillColor(sf::Color(255, 255, 255, alpha));
+            } else {
+                currentAction = GameplayAction::Idle;
+                fader.setFillColor(sf::Color(255, 255, 255, 0));
+            }
+
+            break;
+        }
 
         case GameplayAction::Idle:
         {
             completedLines = 0;
-            
+
             for(int i = 0; i < lines.size(); i++) {
                 if(lines[i].traversed)
                     completedLines++;
             }
 
-            if(lines.size() == completedLines)
+            if(lines.size() == completedLines) {
+                timer = 0;
                 currentAction = GameplayAction::Completed;
+                context.soundPlayer.play(Sound::VICTORY);
+            }
 
             break;
         }
@@ -286,6 +303,18 @@ void Level::update(sf::Time dt) {
                 verts[i] = tempVerts[i];
             }
 
+            if(timer >= fadeTime.asSeconds()) {
+                if(timer - fadeTime.asSeconds() < fadeDuration.asSeconds()) {
+                    float alpha = (timer - fadeTime.asSeconds()) / fadeDuration.asSeconds();
+                    alpha *= 255;
+
+                    fader.setFillColor(sf::Color(255, 255, 255, alpha));
+                } else {
+                    fader.setFillColor(sf::Color(255, 255, 255, 255));
+                    currentAction = GameplayAction::Faded;
+                }
+            }
+
             break;
         }
 
@@ -348,6 +377,8 @@ void Level::render(sf::RenderWindow& renderWindow) {
     }
 
     renderWindow.draw(playerShape);
+
+    renderWindow.draw(fader);
 }
 
 void Level::postRotateSeekPosition() {

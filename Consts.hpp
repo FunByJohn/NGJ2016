@@ -2,6 +2,7 @@
 
 #include <string>
 #include <SFML/Graphics.hpp>
+#include <vector>
 
 extern float screenWidth;
 extern float screenHeight;
@@ -15,4 +16,7 @@ extern std::string gameTitle;
 
 extern sf::Color traversedColor;
 extern sf::Color notTraversedColor;
+
+extern int levelIndex;
+extern std::vector<std::string> levels;
 

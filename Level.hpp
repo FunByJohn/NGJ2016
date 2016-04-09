@@ -15,10 +15,12 @@ typedef sf::Vector3<float> Vertex;
 
 namespace GameplayAction {
 	enum State {
+		NotStarted,
 		Idle,
 		Rotating,
 		Moving,
-		Completed
+		Completed,
+		Faded
 	};
 }
 
@@ -54,6 +56,9 @@ class Level {
 		float rotationDirection = 0.0f;
 		RotationAxis::Axis rotationAxis;
 
+		sf::Time fadeTime = sf::seconds(5.f);
+		sf::Time fadeDuration = sf::seconds(1.f);
+
 		/* player */
 		int playerVertex;
 		int playerTargetVertex;
@@ -66,6 +71,7 @@ class Level {
 		sf::CircleShape playerShape;
 		sf::CircleShape thinCircle;
 		sf::CircleShape thickCircle;
+		sf::RectangleShape fader;
 
 		Context& context;
 };

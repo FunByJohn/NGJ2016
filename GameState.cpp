@@ -2,6 +2,7 @@
 #include <cstdlib>
 
 #include "GameState.hpp"
+#include "Application.hpp"
 
 #include "LineShape.hpp"
 
@@ -11,7 +12,7 @@
 GameState::GameState(Context& context)
 	: State(context),
 	player(playerRadius, 64),
-	level("level_stairs.txt", context),
+	level(levels[levelIndex++], context),
 	view(sf::Vector2f(0.f, 0.f), sf::Vector2f(screenWidth, screenHeight)) {
 
 	player.setFillColor(sf::Color::Black);
@@ -50,6 +51,11 @@ void GameState::handleInput(const sf::Event& event) {
 void GameState::tick(sf::Time dt) {
 	time += dt;
 	level.update(dt);
+
+	if(level.getCurrentAction() == GameplayAction::Faded) {
+		if(levelIndex < levels.size())
+			context.application->switchState(new GameState(context));
+	}
 
 	// Screenshake
 	if(level.getCurrentAction() == GameplayAction::Moving) {
