@@ -1,10 +1,9 @@
+#pragma once
 
-float screenWidth = 800;
-float screenHeight = 600;
+extern float screenWidth;
+extern float screenHeight;
 
-float thinLineThickness = 2.f;
-float thickLineThickness = 4.f;
+extern float thinLineThickness;
+extern float thickLineThickness;
 
-float playerRadius = 6.f;
-
-
+extern float playerRadius;

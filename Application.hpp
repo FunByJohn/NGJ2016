@@ -3,6 +3,8 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 
+#include "State.hpp"
+
 #include "Line.hpp"
 #include "Level.hpp"
 #include "SoundPlayer.hpp"
@@ -13,24 +15,21 @@ class Application {
 		Application();
 		int run();
 
+		void switchState(State* state);
+
 	private:
 		void handleInput(const sf::Event& event);
 		void tick(sf::Time dt);
 		void render();
 
-		void move(sf::Keyboard::Key keyCode);
-
 	private:
 		sf::RenderWindow renderWindow;
 		SoundPlayer soundPlayer;
 		ParticleSystem particleSystem;
-		Level level;
 
-		int playerPosition = 0;
-		sf::CircleShape player;
-
-		sf::Time time;
-		float pos;
+		Context context;
+		State* currentState;
+		State* nextState = nullptr;
 };
 
 

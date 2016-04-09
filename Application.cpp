@@ -3,16 +3,15 @@
 #include <iostream>
 #include <cmath>
 
-#include "Util.hpp"
+#include "GameState.hpp"
+
 #include "Consts.hpp"
 
 Application::Application()
 	: renderWindow(sf::VideoMode(screenWidth, screenHeight), "NGJ2016"),
-	player(playerRadius),
-	level("level.txt") {
+	context(this, renderWindow, soundPlayer, particleSystem) {
 
-	player.setFillColor(sf::Color::Blue);
-	centerOrigin(player);
+	currentState = new GameState(context);
 }
 
 int Application::run() {
@@ -22,6 +21,13 @@ int Application::run() {
 	sf::Time acc = sf::Time::Zero;
 	sf::Time dt = sf::Time::Zero;
 	while(renderWindow.isOpen()) {
+		// check if we should switch state
+		if(nextState) {
+			delete currentState;
+			currentState = nextState;
+			nextState = nullptr;
+		}
+
 		sf::Event event;
 		while(renderWindow.pollEvent(event)) {
 			switch(event.type) {
@@ -49,66 +55,26 @@ int Application::run() {
 }
 
 
+void Application::switchState(State* state) {
+	nextState = state;
+}
+
+
 void Application::handleInput(const sf::Event& event) {
-	if(event.type == sf::Event::KeyPressed) {
-		switch(event.key.code) {
-			case sf::Keyboard::A:
-			case sf::Keyboard::D:
-			case sf::Keyboard::W:
-			case sf::Keyboard::S:
-				level.rotate(event);
-				break;
-
-			case sf::Keyboard::Up:
-				particleSystem.explode(sf::Vector2f(100.f, 100.f));
-				break;
-
-			default:
-				move(event.key.code);
-		}
-	}
+	currentState->handleInput(event);
 }
 
 void Application::tick(sf::Time dt) {
-	time += dt;
-
 	soundPlayer.tick(dt);
 	particleSystem.tick(dt);
 
-	level.verts[0].x = 400 + sin(time.asSeconds()) * 400;
-	level.verts[1].y = 300 + cos(time.asSeconds()) * 150;
-}
-
-void Application::move(sf::Keyboard::Key keyCode) {
-	soundPlayer.play(Sound::SWOOSH);
+	currentState->tick(dt);
 }
 
 void Application::render() {
 	renderWindow.clear(sf::Color::Black);
 
-	auto& lines = level.lines;
-	auto& verts = level.verts;
-
-	for(int i = 0; i < lines.size(); i++) {
-		Line& l = lines[i];
-
-		float thickness = (l.traversable ? thickLineThickness : thinLineThickness);
-		sf::Vector3<float> a = verts[l.a], b = verts[l.b];
-		LineShape line(sf::Vector2f(a.x, a.y), sf::Vector2f(b.x, b.y), sf::Color::Yellow, thickness);
-		renderWindow.draw(line);
-	}
-
-	for(const auto& vert : verts) {
-		sf::CircleShape c(thinLineThickness);
-		centerOrigin(c);
-		c.setFillColor(sf::Color::Yellow);
-		c.setPosition(vert.x, vert.y);
-		renderWindow.draw(c);
-	}
-
-	const auto& vert = verts[playerPosition];
-	player.setPosition(vert.x, vert.y);
-	renderWindow.draw(player);
+	currentState->render();
 
 	renderWindow.draw(particleSystem);
 
