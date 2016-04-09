@@ -30,6 +30,10 @@ class Application {
 		Context context;
 		State* currentState;
 		State* nextState = nullptr;
+
+		sf::Music music;
 };
+
+
 
 

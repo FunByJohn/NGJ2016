@@ -9,6 +9,8 @@
 #include "Line.hpp"
 #include "RotationMatrix.hpp"
 
+#include "ParticleSystem.hpp"
+
 typedef sf::Vector3<float> Vertex;
 
 namespace GameplayAction {
@@ -22,9 +24,9 @@ namespace GameplayAction {
 
 class Level {
 	public:
-		Level(const std::string& filename);
+		Level(const std::string& filename, ParticleSystem& particleSystem);
 
-		void rotate(const sf::Event& event);
+		bool rotate(const sf::Event& event);
 		void move(const sf::Event& event);
 		void update(sf::Time dt);
 		void render(sf::RenderWindow& renderWindow);
@@ -58,4 +60,6 @@ class Level {
 		sf::CircleShape playerShape;
 		sf::CircleShape thinCircle;
 		sf::CircleShape thickCircle;
+
+		ParticleSystem& particleSystem;
 };

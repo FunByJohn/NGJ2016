@@ -10,7 +10,7 @@
 GameState::GameState(Context& context)
 	: State(context),
 	player(playerRadius, 64),
-	level("level2.txt"),
+	level("level2.txt", context.particleSystem),
 	view(sf::Vector2f(0.f, 0.f), sf::Vector2f(screenWidth, screenHeight)) {
 
 	player.setFillColor(sf::Color::Black);
@@ -25,12 +25,9 @@ void GameState::handleInput(const sf::Event& event) {
 			case sf::Keyboard::D:
 			case sf::Keyboard::W:
 			case sf::Keyboard::S:
-				level.rotate(event);
+				if(level.rotate(event))
+					context.soundPlayer.play(Sound::TURN);
 				break;
-
-			/*case sf::Keyboard::Up:
-				context.particleSystem.explode(sf::Vector2f(100.f, 100.f));
-				break;*/
 
 			case sf::Keyboard::Left:
 			case sf::Keyboard::Up:
@@ -38,9 +35,6 @@ void GameState::handleInput(const sf::Event& event) {
 			case sf::Keyboard::Down:
 				level.move(event);
 				break;
-
-			default:
-				move(event.key.code);
 		}
 	}
 }
@@ -48,10 +42,6 @@ void GameState::handleInput(const sf::Event& event) {
 void GameState::tick(sf::Time dt) {
 	time += dt;
 	level.update(dt);
-}
-
-void GameState::move(sf::Keyboard::Key keyCode) {
-	context.soundPlayer.play(Sound::SWOOSH);
 }
 
 void GameState::render() {

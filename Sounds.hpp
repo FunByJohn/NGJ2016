@@ -2,7 +2,8 @@
 
 namespace Sound {
 	enum ID {
-		SWOOSH
+		SWOOSH,
+		TURN
 	};
 }
 

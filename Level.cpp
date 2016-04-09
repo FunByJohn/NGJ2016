@@ -7,8 +7,11 @@
 #include <fstream>
 
 // Load level from file
-Level::Level(const std::string& filename) : thinCircle(0.5 * thinLineThickness, 16), thickCircle(0.5 * thickLineThickness, 16) {
-    currentAction = GameplayAction::Idle;
+Level::Level(const std::string& filename, ParticleSystem& particleSystem)
+    : thinCircle(0.5 * thinLineThickness, 16),
+    thickCircle(0.5 * thickLineThickness, 16),
+    particleSystem(particleSystem),
+    currentAction(GameplayAction::Idle) {
 
     /*
         First line contains two numbers: N, K, where N is the number of vertices, and K is the number of lines.
@@ -61,7 +64,7 @@ Level::Level(const std::string& filename) : thinCircle(0.5 * thinLineThickness, 
     thickCircle.setFillColor(sf::Color::Black);
 }
 
-void Level::rotate(const sf::Event& event) {
+bool Level::rotate(const sf::Event& event) {
 	if(currentAction == GameplayAction::Idle) {
     	currentAction = GameplayAction::Rotating;
     	rotationDuration = 0.3f;
@@ -86,7 +89,11 @@ void Level::rotate(const sf::Event& event) {
     	    rotationDirection = -1.0f;
     	    rotationAxis = RotationAxis::X;
     	}
+
+        return true;
 	}
+
+    return false;
 }
 
 bool fuzzyEquals(float a, float b) {
@@ -232,6 +239,9 @@ void Level::update(sf::Time dt) {
                 playerVertex = playerTargetVertex;
                 currentAction = GameplayAction::Idle;
                 lines[playerTraversedLine].traversed = true;
+
+                auto& vert = verts[playerVertex];
+                particleSystem.explode({vert.x, vert.y}, sf::Color::Black);
             }
 
             break;
@@ -243,7 +253,7 @@ void Level::update(sf::Time dt) {
 }
 
 sf::Vector2f tempPerspective(Vertex v) {
-    //return {v.x, v.y};
+    return {v.x, v.y};
 
     sf::Vector2f newVert;
 

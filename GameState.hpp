@@ -12,8 +12,6 @@ class GameState : public State {
 		void tick(sf::Time dt);
 		void render();
 
-		void move(sf::Keyboard::Key keyCode);
-
 	private:
 		sf::View view;
 

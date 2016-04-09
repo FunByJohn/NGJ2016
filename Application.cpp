@@ -13,6 +13,10 @@ Application::Application()
 	context(this, renderWindow, soundPlayer, particleSystem) {
 
 	currentState = new IntroState(context);
+
+	/*music.openFromFile("res/music.ogg");
+	music.setLoop(true);
+	music.play();*/
 }
 
 int Application::run() {

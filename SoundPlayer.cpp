@@ -2,9 +2,8 @@
 
 // Load sounds
 SoundPlayer::SoundPlayer() {
-	sf::SoundBuffer& buffer = buffers[Sound::SWOOSH];
-	buffer.loadFromFile("res/sounds/swoosh.wav");
-
+	buffers[Sound::SWOOSH].loadFromFile("res/sounds/swoosh.wav");
+	buffers[Sound::TURN].loadFromFile("res/sounds/turn.wav");
 
 }
 
@@ -18,8 +17,11 @@ void SoundPlayer::tick(sf::Time dt) {
 	}
 }
 
-
+#include <iostream>
 sf::Sound& SoundPlayer::play(Sound::ID id) {
+	if(buffers.find(id) == buffers.end())
+		std::cout << "Couldn't find sound!" << std::endl;
+
 	sounds.emplace_back(buffers[id]);
 	sf::Sound& sound = sounds.back();
 	sound.play();
