@@ -12,7 +12,7 @@ Level::Level(const std::string& filename, Context& context)
     thinCircle(0.5 * thinLineThickness, 16),
     thickCircle(0.5 * thickLineThickness, 16),
     fader(sf::Vector2f(screenWidth, screenHeight)),
-    currentAction(GameplayAction::Idle) {
+    currentAction(GameplayAction::NotStarted) {
 
     /*
         First line contains two numbers: N, K, where N is the number of vertices, and K is the number of lines.
@@ -67,7 +67,7 @@ Level::Level(const std::string& filename, Context& context)
     thickCircle.setFillColor(sf::Color::Black);
 
     centerOrigin(fader);
-    fader.setFillColor(sf::Color(255, 255, 255, 0));
+    fader.setFillColor(sf::Color(255, 255, 255, 255));
 }
 
 GameplayAction::State Level::getCurrentAction() { return currentAction; }
@@ -202,6 +202,20 @@ void Level::update(sf::Time dt) {
     //
 
 	switch(currentAction) {
+        case GameplayAction::NotStarted:
+        {
+            timer += dt.asSeconds();
+
+            if(timer < fadeDuration.asSeconds()) {
+                float alpha = 255 - 255 * (timer / fadeDuration.asSeconds());
+                fader.setFillColor(sf::Color(255, 255, 255, alpha));
+            } else {
+                currentAction = GameplayAction::Idle;
+                fader.setFillColor(sf::Color(255, 255, 255, 0));
+            }
+
+            break;
+        }
 
         case GameplayAction::Idle:
         {
@@ -212,8 +226,10 @@ void Level::update(sf::Time dt) {
                     completedLines++;
             }
 
-            if(lines.size() == completedLines)
+            if(lines.size() == completedLines) {
+                timer = 0;
                 currentAction = GameplayAction::Completed;
+            }
 
             break;
         }

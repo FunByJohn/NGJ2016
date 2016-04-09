@@ -15,6 +15,7 @@ typedef sf::Vector3<float> Vertex;
 
 namespace GameplayAction {
 	enum State {
+		NotStarted,
 		Idle,
 		Rotating,
 		Moving,
