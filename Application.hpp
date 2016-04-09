@@ -6,6 +6,7 @@
 #include "Line.hpp"
 #include "Level.hpp"
 #include "SoundPlayer.hpp"
+#include "ParticleSystem.hpp"
 
 class Application {
 	public:
@@ -22,6 +23,7 @@ class Application {
 	private:
 		sf::RenderWindow renderWindow;
 		SoundPlayer soundPlayer;
+		ParticleSystem particleSystem;
 		Level level;
 
 		int playerPosition = 0;

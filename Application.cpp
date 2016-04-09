@@ -59,6 +59,10 @@ void Application::handleInput(const sf::Event& event) {
 				level.rotate(event);
 				break;
 
+			case sf::Keyboard::Up:
+				particleSystem.explode(sf::Vector2f(100.f, 100.f));
+				break;
+
 			default:
 				move(event.key.code);
 		}
@@ -69,6 +73,7 @@ void Application::tick(sf::Time dt) {
 	time += dt;
 
 	soundPlayer.tick(dt);
+	particleSystem.tick(dt);
 
 	level.verts[0].x = 400 + sin(time.asSeconds()) * 400;
 	level.verts[1].y = 300 + cos(time.asSeconds()) * 150;
@@ -104,6 +109,8 @@ void Application::render() {
 	const auto& vert = verts[playerPosition];
 	player.setPosition(vert.x, vert.y);
 	renderWindow.draw(player);
+
+	renderWindow.draw(particleSystem);
 
 	renderWindow.display();
 }
