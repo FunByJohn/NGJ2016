@@ -14,9 +14,9 @@ Application::Application()
 
 	currentState = new IntroState(context);
 
-	/*music.openFromFile("res/music.ogg");
+	music.openFromFile("res/music.wav");
 	music.setLoop(true);
-	music.play();*/
+	music.play();
 }
 
 int Application::run() {
