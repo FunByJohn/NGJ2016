@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 
+#include "Consts.hpp"
 #include "Line.hpp"
 #include "RotationMatrix.hpp"
 
@@ -33,9 +34,10 @@ class Level {
 		std::vector<Vertex> tempVerts;
 		std::vector<Line> lines;
 
-		int playerVertex;
-
 	private:
+		bool testClosePoints(const Vertex& v1, const Vertex& v2);
+
+		float timer;
 		GameplayAction::State currentAction;
 
 		/* rotation */
@@ -45,8 +47,15 @@ class Level {
 		RotationAxis::Axis rotationAxis;
 
 		/* player */
+		int playerVertex;
 		int playerTargetVertex;
+		int playerTraversedLine;
 		float playerPosition;
 		float playerAnimationTimer;
 		float playerAnimationDuration;
+
+		/* graphics stuff */
+		sf::CircleShape playerShape;
+		sf::CircleShape thinCircle;
+		sf::CircleShape thickCircle;
 };

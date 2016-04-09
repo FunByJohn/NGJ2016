@@ -10,7 +10,7 @@
 GameState::GameState(Context& context)
 	: State(context),
 	player(playerRadius, 64),
-	level("level.txt"),
+	level("level2.txt"),
 	view(sf::Vector2f(0.f, 0.f), sf::Vector2f(screenWidth, screenHeight)) {
 
 	player.setFillColor(sf::Color::Black);
@@ -54,44 +54,11 @@ void GameState::move(sf::Keyboard::Key keyCode) {
 	context.soundPlayer.play(Sound::SWOOSH);
 }
 
-sf::Vector2f tempPerspective(Vertex v) {
-	sf::Vector2f newVert;
-
-	newVert.x = v.x * ((v.z + 500.0) / 1000.0);
-    newVert.y = v.y * ((v.z + 500.0) / 1000.0);
-
-    return newVert;
-}
-
 void GameState::render() {
 	sf::RenderWindow& renderWindow = context.window;
 	renderWindow.setView(view);
 
 	level.render(context.window);
-
-	auto& lines = level.lines;
-	auto& verts = level.tempVerts;
-
-	for(int i = 0; i < lines.size(); i++) {
-		Line& l = lines[i];
-
-		float thickness = (l.traversable ? thickLineThickness : thinLineThickness);
-		sf::Vector3<float> a = verts[l.a], b = verts[l.b];
-		LineShape line(tempPerspective(a), tempPerspective(b), sf::Color::Black, thickness);
-		renderWindow.draw(line);
-	}
-
-	for(const auto& vert : verts) {
-		sf::CircleShape c(thinLineThickness);
-		centerOrigin(c);
-		c.setFillColor(sf::Color::Black);
-		c.setPosition(tempPerspective(vert));
-		renderWindow.draw(c);
-	}
-
-	const auto& vert = verts[level.playerVertex];
-	player.setPosition(tempPerspective(vert));
-	renderWindow.draw(player);
 }
 
 

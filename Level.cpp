@@ -1,19 +1,23 @@
 #include "Level.hpp"
 #include "Easing.hpp"
+#include "Util.hpp"
+#include "LineShape.hpp"
 
 #include <iostream>
 #include <fstream>
 
 // Load level from file
-Level::Level(const std::string& filename) {
+Level::Level(const std::string& filename) : thinCircle(0.5 * thinLineThickness, 16), thickCircle(0.5 * thickLineThickness, 16) {
     currentAction = GameplayAction::Idle;
 
     /*
         First line contains two numbers: N, K, where N is the number of vertices, and K is the number of lines.
         Then follow N lines, each line containing the (x,y,z) coordinates for a point.
-        Then follow K lines, where each line contains (a,b,t) where a,b are indices into the vertex array, and t is whether the line is traversable or not.
+        Then follow K lines, where each line contains (a,b) where a,b are indices into the vertex array.
         The final line contains the vertex S which the player starts at.
     */
+
+    timer = 0.0f;
 
 	std::fstream file;
 	file.open(filename);
@@ -28,10 +32,9 @@ Level::Level(const std::string& filename) {
 		tempVerts.emplace_back(x, y, z);
 	}
 
-	bool t;
 	while(K--) {
-		file >> x >> y >> t;
-		lines.emplace_back(x, y, t);
+		file >> x >> y;
+		lines.emplace_back(x, y);
 	}
 
     int S;
@@ -46,6 +49,16 @@ Level::Level(const std::string& filename) {
     playerAnimationDuration = 0.1f;
 
 	file.close();
+
+    playerShape = sf::CircleShape(playerRadius, 64);
+    playerShape.setFillColor(sf::Color::Black);
+    centerOrigin(playerShape);
+
+    centerOrigin(thinCircle);
+    centerOrigin(thickCircle);
+
+    thinCircle.setFillColor(sf::Color::Black);
+    thickCircle.setFillColor(sf::Color::Black);
 }
 
 void Level::rotate(const sf::Event& event) {
@@ -76,15 +89,103 @@ void Level::rotate(const sf::Event& event) {
 	}
 }
 
+bool fuzzyEquals(float a, float b) {
+    const float eps = 0.05f;
+    return (fabs(a - b) <= eps);
+}
+
 void Level::move(const sf::Event& event) {
     if(currentAction == GameplayAction::Idle) {
-         if(event.key.code == sf::Keyboard::Left) {
+        /*
+            Select a line that satisfies the following:
+            a) One of its end points lies on where the player currently is
+            b) The direction to the other point matches that which the player just pressed
 
+            In case of multiple matches:
+            - Select the one with highest z
+        */
+
+        const float proximity = 5.0f;
+
+        sf::Vector2<float> movement(0.0f, 0.0f);
+
+        if(event.key.code == sf::Keyboard::Left) movement.x = -1.0f;
+        if(event.key.code == sf::Keyboard::Right) movement.x = 1.0f;
+        if(event.key.code == sf::Keyboard::Up) movement.y = -1.0f;
+        if(event.key.code == sf::Keyboard::Down) movement.y = 1.0f;
+
+        std::cout << movement.x << " " << movement.y << std::endl;
+
+        auto& player = verts[playerVertex];
+        int match = -1; // the line's index
+        float matchZ = -1000000.0;
+        int matchEndpoint;
+
+        for(int i = 0; i < lines.size(); i++) {
+            auto& line = lines[i];
+
+            if(!line.traversed) {
+                auto& v1 = verts[line.a];
+                auto& v2 = verts[line.b];
+
+                bool close1 = testClosePoints(player, v1);
+                bool close2 = testClosePoints(player, v2);
+
+                if(close1 && close2)
+                    continue; // Ignore lines pointing out/in
+
+                if(!close1 && !close2)
+                    continue; // Ignore unrelated lines
+
+                // Exactly one of the points must be close
+                int otherId;
+                Vertex other;
+
+                if(close1) {
+                    other = v2;
+                    otherId = line.b;
+                } else {
+                    other = v1;
+                    otherId = line.a;
+                }
+
+                float dx = other.x - player.x;
+                float dy = other.y - player.y;
+                float d = sqrt(dx * dx + dy * dy);
+
+                if(fuzzyEquals(dx / d, movement.x) && fuzzyEquals(dy / d, movement.y) && fuzzyEquals(player.z, other.z)) {
+                    if(other.z > matchZ) {
+                        match = i;
+                        matchZ = other.z;
+                        matchEndpoint = otherId;
+                    }
+                }
+            }
+        }
+
+        if(match != -1) {
+            // Found a match!
+            const float distanceDuration = 0.1f;
+
+            float dx = player.x - verts[matchEndpoint].x;
+            float dy = player.y - verts[matchEndpoint].y;
+            float d = sqrt(dx * dx + dy * dy);
+
+            playerTargetVertex = matchEndpoint;
+            playerPosition = 0.0f;
+            playerAnimationTimer = 0.0f;
+            playerAnimationDuration = d / 50.0 * 0.1f;
+            currentAction = GameplayAction::Moving;
+            playerTraversedLine = match;
         }
     }
 }
 
 void Level::update(sf::Time dt) {
+    // rotation showcase thing
+    //for(int i = 0; i < )
+    //
+
 	switch(currentAction) {
 
         case GameplayAction::Idle:
@@ -121,13 +222,76 @@ void Level::update(sf::Time dt) {
             break;
         }
 
+        case GameplayAction::Moving:
+        {
+            playerAnimationTimer += dt.asSeconds();
+            playerPosition = playerAnimationTimer / playerAnimationDuration;
+
+            if(playerAnimationTimer >= playerAnimationDuration) {
+                playerPosition = 1.0f;
+                playerVertex = playerTargetVertex;
+                currentAction = GameplayAction::Idle;
+                lines[playerTraversedLine].traversed = true;
+            }
+
+            break;
+        }
+
         default:
             break;
     }
 }
 
+sf::Vector2f tempPerspective(Vertex v) {
+    //return {v.x, v.y};
+
+    sf::Vector2f newVert;
+
+    newVert.x = v.x * ((v.z + 500.0) / 1000.0);
+    newVert.y = v.y * ((v.z + 500.0) / 1000.0);
+
+    return newVert;
+}
+
 void Level::render(sf::RenderWindow& renderWindow) {
-    //std::cout << "render pls" << std::endl;
+    for(int i = 0; i < lines.size(); i++) {
+        Line& l = lines[i];
+        float thickness = (l.traversed ? thickLineThickness : thinLineThickness);
+        sf::Vector3<float> a = tempVerts[l.a], b = tempVerts[l.b];
+        LineShape line(tempPerspective(a), tempPerspective(b), sf::Color::Black, thickness);
+        renderWindow.draw(line);
+
+        if(!l.traversed) {
+            thinCircle.setPosition(tempPerspective(a));
+            renderWindow.draw(thinCircle);
+            thinCircle.setPosition(tempPerspective(b));
+            renderWindow.draw(thinCircle);
+        } else {
+            thickCircle.setPosition(tempPerspective(a));
+            renderWindow.draw(thickCircle);
+            thickCircle.setPosition(tempPerspective(b));
+            renderWindow.draw(thickCircle);
+        }
+    }
+
+    if(currentAction != GameplayAction::Moving) {
+        const auto& vert = tempVerts[playerVertex];
+        playerShape.setPosition(tempPerspective(vert));
+    } else {
+        auto& from = tempVerts[playerVertex];
+        auto& to = tempVerts[playerTargetVertex];
+
+        Vertex v = from + (to - from) * playerPosition;
+        playerShape.setPosition(tempPerspective(v));
+
+        LineShape connecting(tempPerspective(from), tempPerspective(v), sf::Color::Black, thickLineThickness);
+        renderWindow.draw(connecting);
+
+        thickCircle.setPosition(tempPerspective(from));
+        renderWindow.draw(thickCircle);
+    }
+
+    renderWindow.draw(playerShape);
 }
 
 void Level::postRotateSeekPosition() {
@@ -157,3 +321,11 @@ void Level::postRotateSeekPosition() {
     playerVertex = match;
 }
 
+bool Level::testClosePoints(const Vertex& v1, const Vertex& v2) {
+    const float proximity = 5.0f;
+
+    float dx = v1.x - v2.x;
+    float dy = v1.y - v2.y;
+
+    return (dx * dx + dy * dy <= proximity);
+}
