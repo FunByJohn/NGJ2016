@@ -10,7 +10,7 @@
 GameState::GameState(Context& context)
 	: State(context),
 	player(playerRadius, 64),
-	level("level2.txt", context.particleSystem),
+	level("level2.txt", context),
 	view(sf::Vector2f(0.f, 0.f), sf::Vector2f(screenWidth, screenHeight)) {
 
 	player.setFillColor(sf::Color::Black);
@@ -25,8 +25,7 @@ void GameState::handleInput(const sf::Event& event) {
 			case sf::Keyboard::D:
 			case sf::Keyboard::W:
 			case sf::Keyboard::S:
-				if(level.rotate(event))
-					context.soundPlayer.play(Sound::TURN);
+				level.rotate(event);
 				break;
 
 			case sf::Keyboard::Left:

@@ -7,10 +7,10 @@
 #include <fstream>
 
 // Load level from file
-Level::Level(const std::string& filename, ParticleSystem& particleSystem)
-    : thinCircle(0.5 * thinLineThickness, 16),
+Level::Level(const std::string& filename, Context& context)
+    : context(context),
+    thinCircle(0.5 * thinLineThickness, 16),
     thickCircle(0.5 * thickLineThickness, 16),
-    particleSystem(particleSystem),
     currentAction(GameplayAction::Idle) {
 
     /*
@@ -64,7 +64,7 @@ Level::Level(const std::string& filename, ParticleSystem& particleSystem)
     thickCircle.setFillColor(sf::Color::Black);
 }
 
-bool Level::rotate(const sf::Event& event) {
+void Level::rotate(const sf::Event& event) {
 	if(currentAction == GameplayAction::Idle) {
     	currentAction = GameplayAction::Rotating;
     	rotationDuration = 0.3f;
@@ -90,10 +90,8 @@ bool Level::rotate(const sf::Event& event) {
     	    rotationAxis = RotationAxis::X;
     	}
 
-        return true;
+        context.soundPlayer.play(Sound::TURN);
 	}
-
-    return false;
 }
 
 bool fuzzyEquals(float a, float b) {
@@ -241,7 +239,7 @@ void Level::update(sf::Time dt) {
                 lines[playerTraversedLine].traversed = true;
 
                 auto& vert = verts[playerVertex];
-                particleSystem.explode({vert.x, vert.y}, sf::Color::Black);
+                context.particleSystem.explode({vert.x, vert.y}, sf::Color::Black);
             }
 
             break;

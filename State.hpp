@@ -5,7 +5,6 @@
 
 #include "SoundPlayer.hpp"
 #include "ParticleSystem.hpp"
-#include "Level.hpp"
 
 class Application;
 
