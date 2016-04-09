@@ -14,9 +14,9 @@ typedef sf::Vector3<float> Vertex;
 namespace GameplayAction {
 	enum State {
 		Idle,
-		Intro,
 		Rotating,
-		Moving
+		Moving,
+		Completed
 	};
 }
 
@@ -29,10 +29,13 @@ class Level {
 		void update(sf::Time dt);
 		void render(sf::RenderWindow& renderWindow);
 		void postRotateSeekPosition();
+		sf::Vector2f tempPerspective(Vertex v);
 
 		std::vector<Vertex> verts;
 		std::vector<Vertex> tempVerts;
 		std::vector<Line> lines;
+
+		int completedLines;
 
 	private:
 		bool testClosePoints(const Vertex& v1, const Vertex& v2);
@@ -41,6 +44,7 @@ class Level {
 		GameplayAction::State currentAction;
 
 		/* rotation */
+		float perspective;
 		float rotationTime = 0.0f;
 		float rotationDuration = 0.0f;
 		float rotationDirection = 0.0f;

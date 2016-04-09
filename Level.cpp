@@ -18,6 +18,8 @@ Level::Level(const std::string& filename) : thinCircle(0.5 * thinLineThickness, 
     */
 
     timer = 0.0f;
+    perspective = 0.0f;
+    completedLines = 0;
 
 	std::fstream file;
 	file.open(filename);
@@ -153,7 +155,9 @@ void Level::move(const sf::Event& event) {
                 float dy = other.y - player.y;
                 float d = sqrt(dx * dx + dy * dy);
 
-                if(fuzzyEquals(dx / d, movement.x) && fuzzyEquals(dy / d, movement.y) && fuzzyEquals(player.z, other.z)) {
+                if(fuzzyEquals(dx / d, movement.x) &&
+                   fuzzyEquals(dy / d, movement.y)) {
+                    
                     if(other.z > matchZ) {
                         match = i;
                         matchZ = other.z;
@@ -174,7 +178,7 @@ void Level::move(const sf::Event& event) {
             playerTargetVertex = matchEndpoint;
             playerPosition = 0.0f;
             playerAnimationTimer = 0.0f;
-            playerAnimationDuration = d / 50.0 * 0.1f;
+            playerAnimationDuration = d / 1000.0;
             currentAction = GameplayAction::Moving;
             playerTraversedLine = match;
         }
@@ -190,6 +194,16 @@ void Level::update(sf::Time dt) {
 
         case GameplayAction::Idle:
         {
+            completedLines = 0;
+            
+            for(int i = 0; i < lines.size(); i++) {
+                if(lines[i].traversed)
+                    completedLines++;
+            }
+
+            if(lines.size() == completedLines)
+                currentAction = GameplayAction::Completed;
+
             break;
         }
 
@@ -237,18 +251,49 @@ void Level::update(sf::Time dt) {
             break;
         }
 
+        case GameplayAction::Completed:
+        {
+            float add = dt.asSeconds();
+
+            if(perspective < 1.0f) {
+                perspective += 0.3f * add;
+                playerShape.setRadius(playerRadius * (1.0f - perspective));
+            } else {
+                perspective = 1.0f;
+                playerShape.setRadius(0.001f);
+            }
+
+            centerOrigin(playerShape);
+
+            timer += add;
+
+            RotationMatrix yRot(RotationAxis::Y, perspective * M_PI * add * sin(0.7 * timer));
+            RotationMatrix xRot(RotationAxis::X, perspective * 0.7 * M_PI * add * cos(1.2 * timer));
+
+            for(int i = 0; i < verts.size(); i++) {
+                tempVerts[i] = xRot.apply(yRot.apply(verts[i]));
+                verts[i] = tempVerts[i];
+            }
+
+            break;
+        }
+
         default:
             break;
     }
 }
 
-sf::Vector2f tempPerspective(Vertex v) {
-    //return {v.x, v.y};
+sf::Vector2f Level::tempPerspective(Vertex v) {
+    if(perspective <= 0.001f)
+        return {v.x, v.y};
 
     sf::Vector2f newVert;
 
-    newVert.x = v.x * ((v.z + 500.0) / 1000.0);
-    newVert.y = v.y * ((v.z + 500.0) / 1000.0);
+    float wantedX = v.x * ((v.z + 500.0) / 1000.0);
+    float wantedY = v.y * ((v.z + 500.0) / 1000.0);
+
+    newVert.x = v.x + (wantedX - v.x) * perspective;
+    newVert.y = v.y + (wantedY - v.y) * perspective;
 
     return newVert;
 }
