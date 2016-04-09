@@ -78,7 +78,7 @@ void Level::rotate(const sf::Event& event) {
 
 void Level::move(const sf::Event& event) {
     if(currentAction == GameplayAction::Idle) {
-        if(event.key.code == sf::Keyboard::Left) {
+         if(event.key.code == sf::Keyboard::Left) {
 
         }
     }
@@ -91,7 +91,7 @@ void Level::update(sf::Time dt) {
         {
             break;
         }
-        
+
         case GameplayAction::Rotating:
         {
             rotationTime += dt.asSeconds();
@@ -156,3 +156,4 @@ void Level::postRotateSeekPosition() {
 
     playerVertex = match;
 }
+
