@@ -6,7 +6,7 @@ RotationMatrix::RotationMatrix(RotationAxis::Axis _axis, float theta) {
 
     float cosT, sinT;
 
-    if(fabs(theta) > 0.9999f) {
+    if(fabs(theta) > 0.5 * M_PI - 0.0001) {
         /* most likely the most important part of the entire code yes plz */
         if(theta > 0.0f) {
             cosT = 0.0f;
@@ -16,8 +16,8 @@ RotationMatrix::RotationMatrix(RotationAxis::Axis _axis, float theta) {
             sinT = -1.0;
         }
     } else {
-        float cosT = cos(theta);
-        float sinT = sin(theta);
+        cosT = cos(theta);
+        sinT = sin(theta);
     }
 
     if(axis == RotationAxis::X) {
@@ -35,7 +35,7 @@ RotationMatrix::RotationMatrix(RotationAxis::Axis _axis, float theta) {
     }
 }
 
-sf::Vector3<float> RotationMatrix::apply(const sf::Vector3<float>& vert) {
+sf::Vector3<float> RotationMatrix::apply(const sf::Vector3<float> vert) {
     sf::Vector3<float> result;
 
     result.x = entries[0][0] * vert.x + entries[0][1] * vert.y + entries[0][2] * vert.z;

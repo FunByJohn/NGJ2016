@@ -20,6 +20,7 @@ int Application::run() {
 	sf::Time frameTime = sf::seconds(1.f / 60.f);
 	sf::Time acc = sf::Time::Zero;
 	sf::Time dt = sf::Time::Zero;
+
 	while(renderWindow.isOpen()) {
 		// check if we should switch state
 		if(nextState) {
@@ -72,7 +73,7 @@ void Application::tick(sf::Time dt) {
 }
 
 void Application::render() {
-	renderWindow.clear(sf::Color::Black);
+	renderWindow.clear(sf::Color::White);
 
 	currentState->render();
 

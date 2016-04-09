@@ -1,9 +1,9 @@
 #include "Consts.hpp"
 
-float screenWidth = 800;
-float screenHeight = 600;
+float screenWidth = 1200;
+float screenHeight = 1200;
 
-float thinLineThickness = 2.f;
-float thickLineThickness = 4.f;
+float thinLineThickness = 5.0f;
+float thickLineThickness = 10.0f;
 
-float playerRadius = 6.f;
+float playerRadius = 30.0f;

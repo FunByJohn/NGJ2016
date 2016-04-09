@@ -15,5 +15,5 @@ private:
     float entries[3][3];
 public:
     RotationMatrix(RotationAxis::Axis _axis, float theta);
-    sf::Vector3<float> apply(const sf::Vector3<float>& vert);
+    sf::Vector3<float> apply(const sf::Vector3<float> vert);
 };

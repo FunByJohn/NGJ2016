@@ -9,11 +9,11 @@
 
 GameState::GameState(Context& context)
 	: State(context),
-	player(playerRadius),
+	player(playerRadius, 64),
 	level("level.txt"),
 	view(sf::Vector2f(0.f, 0.f), sf::Vector2f(screenWidth, screenHeight)) {
 
-	player.setFillColor(sf::Color::Blue);
+	player.setFillColor(sf::Color::Black);
 	centerOrigin(player);
 }
 
@@ -28,8 +28,15 @@ void GameState::handleInput(const sf::Event& event) {
 				level.rotate(event);
 				break;
 
-			case sf::Keyboard::Up:
+			/*case sf::Keyboard::Up:
 				context.particleSystem.explode(sf::Vector2f(100.f, 100.f));
+				break;*/
+
+			case sf::Keyboard::Left:
+			case sf::Keyboard::Up:
+			case sf::Keyboard::Right:
+			case sf::Keyboard::Down:
+
 				break;
 
 			default:
@@ -40,41 +47,50 @@ void GameState::handleInput(const sf::Event& event) {
 
 void GameState::tick(sf::Time dt) {
 	time += dt;
-
-	level.verts[0].x = 400 + sin(time.asSeconds()) * 400;
-	level.verts[1].y = 300 + cos(time.asSeconds()) * 150;
+	level.update(dt);
 }
 
 void GameState::move(sf::Keyboard::Key keyCode) {
 	context.soundPlayer.play(Sound::SWOOSH);
 }
 
+sf::Vector2f tempPerspective(Vertex v) {
+	sf::Vector2f newVert;
+
+	newVert.x = v.x * ((v.z + 500.0) / 1000.0);
+    newVert.y = v.y * ((v.z + 500.0) / 1000.0);
+
+    return newVert;
+}
+
 void GameState::render() {
 	sf::RenderWindow& renderWindow = context.window;
 	renderWindow.setView(view);
 
+	level.render(context.window);
+
 	auto& lines = level.lines;
-	auto& verts = level.verts;
+	auto& verts = level.tempVerts;
 
 	for(int i = 0; i < lines.size(); i++) {
 		Line& l = lines[i];
 
 		float thickness = (l.traversable ? thickLineThickness : thinLineThickness);
 		sf::Vector3<float> a = verts[l.a], b = verts[l.b];
-		LineShape line(sf::Vector2f(a.x, a.y), sf::Vector2f(b.x, b.y), sf::Color::Yellow, thickness);
+		LineShape line(tempPerspective(a), tempPerspective(b), sf::Color::Black, thickness);
 		renderWindow.draw(line);
 	}
 
 	for(const auto& vert : verts) {
 		sf::CircleShape c(thinLineThickness);
 		centerOrigin(c);
-		c.setFillColor(sf::Color::Yellow);
-		c.setPosition(vert.x, vert.y);
+		c.setFillColor(sf::Color::Black);
+		c.setPosition(tempPerspective(vert));
 		renderWindow.draw(c);
 	}
 
-	const auto& vert = verts[playerPosition];
-	player.setPosition(vert.x, vert.y);
+	const auto& vert = verts[level.playerVertex];
+	player.setPosition(tempPerspective(vert));
 	renderWindow.draw(player);
 }
 
