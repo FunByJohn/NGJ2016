@@ -9,7 +9,8 @@ IntroState::IntroState(Context& context) : State(context) {
 	font.loadFromFile("res/title.otf");
 	text.setFont(font);
 	text.setString(gameTitle);
-	text.setCharacterSize(24);
+	text.setCharacterSize(48);
+	text.setColor(sf::Color::Black);
 }
 
 
