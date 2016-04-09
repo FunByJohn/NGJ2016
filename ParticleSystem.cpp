@@ -9,7 +9,7 @@ float genVel(int min) {
 }
 
 void ParticleSystem::explode(sf::Vector2f position, sf::Color color) {
-	int count = 2 + rand() % 3;
+	int count = 4 + rand() % 4;
 
 	for(int i = 0; i < count; i++) {
 		sf::Vector2f vel = {genVel(2000.f), genVel(1900.f)};

@@ -1,4 +1,5 @@
 #include <cmath>
+#include <cstdlib>
 
 #include "GameState.hpp"
 
@@ -10,7 +11,7 @@
 GameState::GameState(Context& context)
 	: State(context),
 	player(playerRadius, 64),
-	level("level3.txt"),
+	level("level3.txt", context),
 	view(sf::Vector2f(0.f, 0.f), sf::Vector2f(screenWidth, screenHeight)) {
 
 	player.setFillColor(sf::Color::Black);
@@ -36,19 +37,12 @@ void GameState::handleInput(const sf::Event& event) {
 				level.rotate(event);
 				break;
 
-			/*case sf::Keyboard::Up:
-				context.particleSystem.explode(sf::Vector2f(100.f, 100.f));
-				break;*/
-
 			case sf::Keyboard::Left:
 			case sf::Keyboard::Up:
 			case sf::Keyboard::Right:
 			case sf::Keyboard::Down:
 				level.move(event);
 				break;
-
-			default:
-				move(event.key.code);
 		}
 	}
 }
@@ -56,10 +50,14 @@ void GameState::handleInput(const sf::Event& event) {
 void GameState::tick(sf::Time dt) {
 	time += dt;
 	level.update(dt);
-}
 
-void GameState::move(sf::Keyboard::Key keyCode) {
-	context.soundPlayer.play(Sound::SWOOSH);
+	// Screenshake
+	if(level.getCurrentAction() == GameplayAction::Moving) {
+		float x = (rand() % 10000) / 2000.f, y = (rand() % 10000) / 2000.f;
+		view.setCenter(sf::Vector2f(x, y));
+	} else {
+		view.setCenter(sf::Vector2f());
+	}
 }
 
 void GameState::render() {

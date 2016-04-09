@@ -7,8 +7,11 @@
 #include <fstream>
 
 // Load level from file
-Level::Level(const std::string& filename) : thinCircle(0.5 * thinLineThickness, 16), thickCircle(0.5 * thickLineThickness, 16) {
-    currentAction = GameplayAction::Idle;
+Level::Level(const std::string& filename, Context& context)
+    : context(context),
+    thinCircle(0.5 * thinLineThickness, 16),
+    thickCircle(0.5 * thickLineThickness, 16),
+    currentAction(GameplayAction::Idle) {
 
     /*
         First line contains two numbers: N, K, where N is the number of vertices, and K is the number of lines.
@@ -63,6 +66,8 @@ Level::Level(const std::string& filename) : thinCircle(0.5 * thinLineThickness, 
     thickCircle.setFillColor(sf::Color::Black);
 }
 
+GameplayAction::State Level::getCurrentAction() { return currentAction; }
+
 void Level::rotate(const sf::Event& event) {
 	if(currentAction == GameplayAction::Idle) {
     	currentAction = GameplayAction::Rotating;
@@ -88,6 +93,8 @@ void Level::rotate(const sf::Event& event) {
     	    rotationDirection = -1.0f;
     	    rotationAxis = RotationAxis::X;
     	}
+
+        context.soundPlayer.play(Sound::TURN);
 	}
 }
 
@@ -246,6 +253,10 @@ void Level::update(sf::Time dt) {
                 playerVertex = playerTargetVertex;
                 currentAction = GameplayAction::Idle;
                 lines[playerTraversedLine].traversed = true;
+
+                auto& vert = verts[playerVertex];
+                context.particleSystem.explode({vert.x, vert.y}, sf::Color::Black);
+                context.soundPlayer.play(Sound::PING);
             }
 
             break;

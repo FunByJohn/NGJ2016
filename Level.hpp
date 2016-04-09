@@ -9,6 +9,8 @@
 #include "Line.hpp"
 #include "RotationMatrix.hpp"
 
+#include "State.hpp"
+
 typedef sf::Vector3<float> Vertex;
 
 namespace GameplayAction {
@@ -22,7 +24,7 @@ namespace GameplayAction {
 
 class Level {
 	public:
-		Level(const std::string& filename);
+		Level(const std::string& filename, Context& context);
 
 		void rotate(const sf::Event& event);
 		void move(const sf::Event& event);
@@ -30,6 +32,8 @@ class Level {
 		void render(sf::RenderWindow& renderWindow);
 		void postRotateSeekPosition();
 		sf::Vector2f tempPerspective(Vertex v);
+
+		GameplayAction::State getCurrentAction();
 
 		std::vector<Vertex> verts;
 		std::vector<Vertex> tempVerts;
@@ -62,4 +66,6 @@ class Level {
 		sf::CircleShape playerShape;
 		sf::CircleShape thinCircle;
 		sf::CircleShape thickCircle;
+
+		Context& context;
 };
