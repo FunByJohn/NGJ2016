@@ -25,7 +25,7 @@ Level::Level(const std::string& filename, Context& context)
     perspective = 0.0f;
     completedLines = 0;
 
-	std::fstream file;
+    std::fstream file;
 	file.open(filename);
 
 	int N, K;
@@ -45,8 +45,6 @@ Level::Level(const std::string& filename, Context& context)
 
     int S;
     file >> S;
-
-    std::cout << "Start at: " << S << std::endl;
 
     playerVertex = S;
     playerTargetVertex = playerVertex;
@@ -126,8 +124,6 @@ void Level::move(const sf::Event& event) {
         if(event.key.code == sf::Keyboard::Right) movement.x = 1.0f;
         if(event.key.code == sf::Keyboard::Up) movement.y = -1.0f;
         if(event.key.code == sf::Keyboard::Down) movement.y = 1.0f;
-
-        std::cout << movement.x << " " << movement.y << std::endl;
 
         auto& player = verts[playerVertex];
         int match = -1; // the line's index
