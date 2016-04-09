@@ -29,7 +29,7 @@ void GameState::handleInput(const sf::Event& event) {
 				break;
 
 			case sf::Keyboard::Up:
-				context.particleSystem.explode(sf::Vector2f(100.f, 100.f));
+				context.particleSystem.explode(sf::Vector2f(100.f, 100.f), sf::Color::Blue);
 				break;
 
 			default:

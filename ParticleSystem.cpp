@@ -8,14 +8,14 @@ float genVel(int min) {
 	return -min + (rand() % (2 * min * 1000)) / 1000.f;
 }
 
-void ParticleSystem::explode(sf::Vector2f position) {
+void ParticleSystem::explode(sf::Vector2f position, sf::Color color) {
 	int count = 2 + rand() % 3;
 
 	for(int i = 0; i < count; i++) {
 		sf::Vector2f vel = {genVel(2000.f), genVel(1900.f)};
 
 
-		particles.emplace_back(new Particle(vel, position));
+		particles.emplace_back(new Particle(vel, position, color));
 	}
 }
 
@@ -43,6 +43,8 @@ void ParticleSystem::draw(sf::RenderTarget& target, sf::RenderStates states) con
 	for(const ParticleData& p : particles) {
 		verts[2*i].position = p.p->p1;
 		verts[2*i+1].position = p.p->p2;
+		verts[2*i].color = p.p->color;
+		verts[2*i+1].color = p.p->color;
 		i++;
 	}
 

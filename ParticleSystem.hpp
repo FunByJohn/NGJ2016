@@ -15,7 +15,7 @@ struct ParticleData {
 
 class ParticleSystem : public sf::Drawable {
 	public:
-		void explode(sf::Vector2f position);
+		void explode(sf::Vector2f position, sf::Color color = sf::Color::White);
 		void tick(sf::Time dt);
 
 	private:
