@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cmath>
 
+#include "IntroState.hpp"
 #include "GameState.hpp"
 
 #include "Consts.hpp"
@@ -11,7 +12,7 @@ Application::Application()
 	: renderWindow(sf::VideoMode(screenWidth, screenHeight), "NGJ2016"),
 	context(this, renderWindow, soundPlayer, particleSystem) {
 
-	currentState = new GameState(context);
+	currentState = new IntroState(context);
 }
 
 int Application::run() {
