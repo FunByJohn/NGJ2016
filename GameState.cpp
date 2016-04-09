@@ -11,7 +11,7 @@
 GameState::GameState(Context& context)
 	: State(context),
 	player(playerRadius, 64),
-	level("level3.txt", context),
+	level("level_stairs.txt", context),
 	view(sf::Vector2f(0.f, 0.f), sf::Vector2f(screenWidth, screenHeight)) {
 
 	player.setFillColor(sf::Color::Black);
