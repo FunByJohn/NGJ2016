@@ -9,3 +9,7 @@ float thickLineThickness = 10.0f;
 float playerRadius = 30.0f;
 
 std::string gameTitle = "Good game";
+
+sf::Color traversedColor = sf::Color(0, 0, 0, 128);
+sf::Color notTraversedColor = sf::Color::Black;
+

@@ -76,8 +76,9 @@ void GameState::render() {
 		Line& l = lines[i];
 
 		float thickness = (l.traversable ? thickLineThickness : thinLineThickness);
+		sf::Color color = (l.traversed ? traversedColor : notTraversedColor);
 		sf::Vector3<float> a = verts[l.a], b = verts[l.b];
-		LineShape line(tempPerspective(a), tempPerspective(b), sf::Color::Black, thickness);
+		LineShape line(tempPerspective(a), tempPerspective(b), color, thickness);
 		renderWindow.draw(line);
 	}
 
