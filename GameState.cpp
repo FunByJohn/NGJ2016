@@ -36,7 +36,6 @@ void GameState::handleInput(const sf::Event& event) {
 			case sf::Keyboard::Up:
 			case sf::Keyboard::Right:
 			case sf::Keyboard::Down:
-
 				break;
 
 			default:
