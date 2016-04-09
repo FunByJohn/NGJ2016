@@ -15,6 +15,8 @@ class GameState : public State {
 		void move(sf::Keyboard::Key keyCode);
 
 	private:
+		sf::View view;
+
 		Level level;
 
 		int playerPosition = 0;

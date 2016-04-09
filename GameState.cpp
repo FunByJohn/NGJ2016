@@ -10,7 +10,8 @@
 GameState::GameState(Context& context)
 	: State(context),
 	player(playerRadius),
-	level("level.txt") 	{
+	level("level.txt"),
+	view(sf::Vector2f(0.f, 0.f), sf::Vector2f(screenWidth, screenHeight)) {
 
 	player.setFillColor(sf::Color::Blue);
 	centerOrigin(player);
@@ -50,6 +51,7 @@ void GameState::move(sf::Keyboard::Key keyCode) {
 
 void GameState::render() {
 	sf::RenderWindow& renderWindow = context.window;
+	renderWindow.setView(view);
 
 	auto& lines = level.lines;
 	auto& verts = level.verts;
