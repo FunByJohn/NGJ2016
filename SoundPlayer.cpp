@@ -4,7 +4,7 @@
 SoundPlayer::SoundPlayer() {
 	buffers[Sound::SWOOSH].loadFromFile("res/sounds/swoosh.wav");
 	buffers[Sound::TURN].loadFromFile("res/sounds/turn.wav");
-
+	buffers[Sound::PING].loadFromFile("res/sounds/ping.wav");
 }
 
 

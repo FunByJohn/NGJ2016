@@ -1,4 +1,5 @@
 #include <cmath>
+#include <cstdlib>
 
 #include "GameState.hpp"
 
@@ -10,7 +11,7 @@
 GameState::GameState(Context& context)
 	: State(context),
 	player(playerRadius, 64),
-	level("level2.txt", context),
+	level("level.txt", context),
 	view(sf::Vector2f(0.f, 0.f), sf::Vector2f(screenWidth, screenHeight)) {
 
 	player.setFillColor(sf::Color::Black);
@@ -41,6 +42,14 @@ void GameState::handleInput(const sf::Event& event) {
 void GameState::tick(sf::Time dt) {
 	time += dt;
 	level.update(dt);
+
+	// Screenshake
+	if(level.getCurrentAction() == GameplayAction::Moving) {
+		float x = (rand() % 10000) / 2000.f, y = (rand() % 10000) / 2000.f;
+		view.setCenter(sf::Vector2f(x, y));
+	} else {
+		view.setCenter(sf::Vector2f());
+	}
 }
 
 void GameState::render() {

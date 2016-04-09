@@ -32,6 +32,8 @@ class Level {
 		void render(sf::RenderWindow& renderWindow);
 		void postRotateSeekPosition();
 
+		GameplayAction::State getCurrentAction();
+
 		std::vector<Vertex> verts;
 		std::vector<Vertex> tempVerts;
 		std::vector<Line> lines;

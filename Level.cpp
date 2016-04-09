@@ -64,6 +64,8 @@ Level::Level(const std::string& filename, Context& context)
     thickCircle.setFillColor(sf::Color::Black);
 }
 
+GameplayAction::State Level::getCurrentAction() { return currentAction; }
+
 void Level::rotate(const sf::Event& event) {
 	if(currentAction == GameplayAction::Idle) {
     	currentAction = GameplayAction::Rotating;
@@ -240,6 +242,7 @@ void Level::update(sf::Time dt) {
 
                 auto& vert = verts[playerVertex];
                 context.particleSystem.explode({vert.x, vert.y}, sf::Color::Black);
+                context.soundPlayer.play(Sound::PING);
             }
 
             break;
