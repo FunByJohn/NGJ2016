@@ -11,6 +11,7 @@ Level::Level(const std::string& filename, Context& context)
     : context(context),
     thinCircle(0.5 * thinLineThickness, 16),
     thickCircle(0.5 * thickLineThickness, 16),
+    fader(sf::Vector2f(screenWidth, screenHeight)),
     currentAction(GameplayAction::Idle) {
 
     /*
@@ -64,6 +65,9 @@ Level::Level(const std::string& filename, Context& context)
 
     thinCircle.setFillColor(sf::Color::Black);
     thickCircle.setFillColor(sf::Color::Black);
+
+    centerOrigin(fader);
+    fader.setFillColor(sf::Color(255, 255, 255, 0));
 }
 
 GameplayAction::State Level::getCurrentAction() { return currentAction; }
@@ -164,7 +168,7 @@ void Level::move(const sf::Event& event) {
 
                 if(fuzzyEquals(dx / d, movement.x) &&
                    fuzzyEquals(dy / d, movement.y)) {
-                    
+
                     if(other.z > matchZ) {
                         match = i;
                         matchZ = other.z;
@@ -202,7 +206,7 @@ void Level::update(sf::Time dt) {
         case GameplayAction::Idle:
         {
             completedLines = 0;
-            
+
             for(int i = 0; i < lines.size(); i++) {
                 if(lines[i].traversed)
                     completedLines++;
@@ -286,6 +290,18 @@ void Level::update(sf::Time dt) {
                 verts[i] = tempVerts[i];
             }
 
+            if(timer >= fadeTime.asSeconds()) {
+                if(timer - fadeTime.asSeconds() < fadeDuration.asSeconds()) {
+                    float alpha = (timer - fadeTime.asSeconds()) / fadeDuration.asSeconds();
+                    alpha *= 255;
+
+                    fader.setFillColor(sf::Color(255, 255, 255, alpha));
+                } else {
+                    fader.setFillColor(sf::Color(255, 255, 255, 255));
+                    currentAction = GameplayAction::Faded;
+                }
+            }
+
             break;
         }
 
@@ -348,6 +364,8 @@ void Level::render(sf::RenderWindow& renderWindow) {
     }
 
     renderWindow.draw(playerShape);
+
+    renderWindow.draw(fader);
 }
 
 void Level::postRotateSeekPosition() {
