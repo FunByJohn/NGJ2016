@@ -4,7 +4,8 @@ namespace Sound {
 	enum ID {
 		SWOOSH,
 		TURN,
-		PING
+		PING,
+		VICTORY
 	};
 }
 

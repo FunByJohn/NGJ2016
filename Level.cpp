@@ -229,6 +229,7 @@ void Level::update(sf::Time dt) {
             if(lines.size() == completedLines) {
                 timer = 0;
                 currentAction = GameplayAction::Completed;
+                context.soundPlayer.play(Sound::VICTORY);
             }
 
             break;
