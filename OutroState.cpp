@@ -1,14 +1,11 @@
-#include "IntroState.hpp"
-#include "GameState.hpp"
-
-#include "Application.hpp"
+#include "OutroState.hpp"
 
 #include "Consts.hpp"
 
-IntroState::IntroState(Context& context) : State(context) {
+OutroState::OutroState(Context& context) : State(context) {
 	font.loadFromFile("res/title.otf");
 	text.setFont(font);
-	text.setString(gameTitle);
+	text.setString("FunByJohn & zii");
 	text.setCharacterSize(128);
 	text.setColor(sf::Color::Black);
 
@@ -19,7 +16,7 @@ IntroState::IntroState(Context& context) : State(context) {
 
 
 	helpText.setFont(font);
-	helpText.setString("Press SPACE to start");
+	helpText.setString("Made for NGJ2016");
 	helpText.setCharacterSize(48);
 	helpText.setColor(sf::Color::Black);
 	bounds = helpText.getLocalBounds();
@@ -28,16 +25,15 @@ IntroState::IntroState(Context& context) : State(context) {
 }
 
 
-void IntroState::handleInput(const sf::Event& event) {
-	if(event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
-		context.application->switchState(new GameState(context));
+void OutroState::handleInput(const sf::Event& event) {
 }
 
-void IntroState::tick(sf::Time dt) {
+void OutroState::tick(sf::Time dt) {
 
 }
 
-void IntroState::render() {
+void OutroState::render() {
+	context.window.setView(context.window.getDefaultView());
 	context.window.draw(text);
 	context.window.draw(helpText);
 }

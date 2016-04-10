@@ -2,6 +2,7 @@
 #include <cstdlib>
 
 #include "GameState.hpp"
+#include "OutroState.hpp"
 #include "Application.hpp"
 
 #include "LineShape.hpp"
@@ -60,11 +61,14 @@ void GameState::tick(sf::Time dt) {
 	time += dt;
 	level.update(dt);
 
-	if(level.getCurrentAction() == GameplayAction::Faded) {
-		if(levelIndex < levels.size() && !done) {
+	if(level.getCurrentAction() == GameplayAction::Faded && !done) {
+		if(levelIndex < levels.size()) {
 			context.application->switchState(new GameState(context));
-			done = true;
+		} else {
+			context.application->switchState(new OutroState(context));
 		}
+
+		done = true;
 	}
 
 	// Screenshake

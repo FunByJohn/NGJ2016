@@ -1,8 +1,8 @@
 #include "State.hpp"
 
-class IntroState : public State {
+class OutroState : public State {
 	public:
-		IntroState(Context& context);
+		OutroState(Context& context);
 
 		void handleInput(const sf::Event& event);
 		void tick(sf::Time dt);
