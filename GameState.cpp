@@ -44,6 +44,14 @@ void GameState::handleInput(const sf::Event& event) {
 			case sf::Keyboard::Down:
 				level.move(event);
 				break;
+
+			case sf::Keyboard::R:
+				if(!done) {
+					done = true;
+					levelIndex--;
+					context.application->switchState(new GameState(context));
+				}
+				break;
 		}
 	}
 }
