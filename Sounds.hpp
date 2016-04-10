@@ -5,7 +5,8 @@ namespace Sound {
 		SWOOSH,
 		TURN,
 		PING,
-		VICTORY
+		VICTORY,
+		FILL
 	};
 }
 
