@@ -2,6 +2,7 @@
 
 float screenWidth = 800;
 float screenHeight = 800;
+bool fullscreen = false;
 
 float thinLineThickness = 10.0f;
 float thickLineThickness = 20.0f;

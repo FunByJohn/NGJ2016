@@ -9,8 +9,11 @@
 #include "Consts.hpp"
 
 Application::Application()
-	: renderWindow(sf::VideoMode(screenWidth, screenHeight), "NGJ2016"),
+	: renderWindow(sf::VideoMode(screenWidth, screenHeight), "NGJ2016", (fullscreen ? sf::Style::Fullscreen : sf::Style::Default)),
 	context(this, renderWindow, soundPlayer, particleSystem) {
+
+	renderWindow.setMouseCursorVisible(false);
+	renderWindow.setVerticalSyncEnabled(true);
 
 	currentState = new IntroState(context);
 

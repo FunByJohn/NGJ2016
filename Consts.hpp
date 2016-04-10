@@ -6,6 +6,7 @@
 
 extern float screenWidth;
 extern float screenHeight;
+extern bool fullscreen;
 
 extern float thinLineThickness;
 extern float thickLineThickness;
