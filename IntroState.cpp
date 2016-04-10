@@ -6,7 +6,7 @@
 #include "Consts.hpp"
 
 IntroState::IntroState(Context& context) : State(context) {
-	font.loadFromFile("res/title.otf");
+	font.loadFromFile("res/title.ttf");
 	text.setFont(font);
 	text.setString(gameTitle);
 	text.setCharacterSize(128);
@@ -19,7 +19,7 @@ IntroState::IntroState(Context& context) : State(context) {
 
 
 	helpText.setFont(font);
-	helpText.setString("Press SPACE to start");
+	helpText.setString("PRESS SPACE TO START");
 	helpText.setCharacterSize(48);
 	helpText.setColor(sf::Color::Black);
 	bounds = helpText.getLocalBounds();

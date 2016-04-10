@@ -3,10 +3,10 @@
 #include "Consts.hpp"
 
 OutroState::OutroState(Context& context) : State(context) {
-	font.loadFromFile("res/title.otf");
+	font.loadFromFile("res/title.ttf");
 	text.setFont(font);
-	text.setString("FunByJohn & zii");
-	text.setCharacterSize(128);
+	text.setString("FUNBYJOHN N ZII");
+	text.setCharacterSize(86);
 	text.setColor(sf::Color::Black);
 
 	auto bounds = text.getLocalBounds();
@@ -16,7 +16,7 @@ OutroState::OutroState(Context& context) : State(context) {
 
 
 	helpText.setFont(font);
-	helpText.setString("Made for NGJ2016");
+	helpText.setString("MADE FOR NGJ2016");
 	helpText.setCharacterSize(48);
 	helpText.setColor(sf::Color::Black);
 	bounds = helpText.getLocalBounds();
