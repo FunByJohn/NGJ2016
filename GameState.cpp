@@ -53,6 +53,14 @@ void GameState::handleInput(const sf::Event& event) {
 					context.application->switchState(new GameState(context));
 				}
 				break;
+
+			case sf::Keyboard::O:
+				if(!done) {
+					done = true;
+					levelIndex = levels.size() - 1;
+					context.application->switchState(new GameState(context));
+				}
+				break;
 		}
 	}
 }
