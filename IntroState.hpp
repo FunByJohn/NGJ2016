@@ -11,5 +11,6 @@ class IntroState : public State {
 	private:
 		sf::Font font;
 		sf::Text text;
+		sf::Text helpText;
 };
 

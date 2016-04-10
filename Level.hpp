@@ -73,5 +73,7 @@ class Level {
 		sf::CircleShape thickCircle;
 		sf::RectangleShape fader;
 
+		sf::Sound* fillSound;
+
 		Context& context;
 };

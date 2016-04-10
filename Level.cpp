@@ -188,6 +188,10 @@ void Level::move(const sf::Event& event) {
             playerAnimationDuration = d / 1000.0;
             currentAction = GameplayAction::Moving;
             playerTraversedLine = match;
+
+            // Play fill sound
+            fillSound = &context.soundPlayer.play(Sound::FILL);
+            fillSound->setLoop(true);
         }
     }
 }
@@ -270,6 +274,8 @@ void Level::update(sf::Time dt) {
                 playerVertex = playerTargetVertex;
                 currentAction = GameplayAction::Idle;
                 lines[playerTraversedLine].traversed = true;
+
+                fillSound->stop();
 
                 auto& vert = verts[playerVertex];
                 context.particleSystem.explode({vert.x, vert.y}, sf::Color::Black);

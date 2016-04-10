@@ -9,8 +9,22 @@ IntroState::IntroState(Context& context) : State(context) {
 	font.loadFromFile("res/title.otf");
 	text.setFont(font);
 	text.setString(gameTitle);
-	text.setCharacterSize(48);
+	text.setCharacterSize(128);
 	text.setColor(sf::Color::Black);
+
+	auto bounds = text.getLocalBounds();
+	text.setOrigin(bounds.width / 2, bounds.height / 2);
+
+	text.setPosition(screenWidth / 2, screenHeight / 2);
+
+
+	helpText.setFont(font);
+	helpText.setString("Press SPACE to start");
+	helpText.setCharacterSize(48);
+	helpText.setColor(sf::Color::Black);
+	bounds = helpText.getLocalBounds();
+	helpText.setOrigin(bounds.width / 2, bounds.height / 2);
+	helpText.setPosition(screenWidth / 2, screenHeight * 0.75f);
 }
 
 
@@ -25,6 +39,7 @@ void IntroState::tick(sf::Time dt) {
 
 void IntroState::render() {
 	context.window.draw(text);
+	context.window.draw(helpText);
 }
 
 

@@ -6,6 +6,7 @@ SoundPlayer::SoundPlayer() {
 	buffers[Sound::TURN].loadFromFile("res/sounds/turn.wav");
 	buffers[Sound::PING].loadFromFile("res/sounds/ping.wav");
 	buffers[Sound::VICTORY].loadFromFile("res/sounds/victory.wav");
+	buffers[Sound::FILL].loadFromFile("res/sounds/fill.wav");
 }
 
 

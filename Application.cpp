@@ -14,7 +14,7 @@ Application::Application()
 
 	currentState = new IntroState(context);
 
-	music.openFromFile("res/music.wav");
+	music.openFromFile("res/music.flac");
 	music.setLoop(true);
 	music.play();
 }
