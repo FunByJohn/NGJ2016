@@ -22,6 +22,7 @@ class GameState : public State {
 
 		sf::Time time;
 		float pos;
+		bool done = false;
 
 		sf::RectangleShape filledRect;
 		sf::RectangleShape unfilledRect;

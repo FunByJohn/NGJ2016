@@ -15,7 +15,9 @@ sf::Color notTraversedColor = sf::Color::Black;
 
 int levelIndex = 0;
 std::vector<std::string> levels = {
+	"level_stairs.txt",
 	"level.txt",
-	"level3.txt"
+	"level3.txt",
+	"level_plus.txt",
+	"level_trickster.txt"
 };
-

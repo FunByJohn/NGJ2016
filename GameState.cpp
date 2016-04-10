@@ -53,8 +53,10 @@ void GameState::tick(sf::Time dt) {
 	level.update(dt);
 
 	if(level.getCurrentAction() == GameplayAction::Faded) {
-		if(levelIndex < levels.size())
+		if(levelIndex < levels.size() && !done) {
 			context.application->switchState(new GameState(context));
+			done = true;
+		}
 	}
 
 	// Screenshake
